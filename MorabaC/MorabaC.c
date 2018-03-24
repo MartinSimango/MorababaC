@@ -26,6 +26,61 @@ void resetTerminalSettings() {
 
 
 
+struct Player GamePlayer1;
+struct Player GamePlayer2;
+
+void setUpPlayers() {
+
+#if defined(__APPLE__) || defined(__unix__) 
+
+	strcpy(GamePlayer1.name, "Player 1");
+	strcpy(GamePlayer2.name, "Player 1");
+
+
+#elif defined(_WIN32) || defined(WIN32)
+
+	strcpy_s(GamePlayer1.name, sizeof(GamePlayer1.name), "Player 1");
+	strcpy_s(GamePlayer2.name, sizeof(GamePlayer1.name), "Player 2");
+
+#endif
+
+	GamePlayer1.id = 1;
+
+	GamePlayer1.symbol = 'x';
+
+	GamePlayer1.numberOfPieces = 4;
+	
+	GamePlayer1.playerState = PLACING;
+
+	GamePlayer1.positions = (List*)malloc(sizeof(List));
+
+	initList(GamePlayer1.positions);
+
+	GamePlayer2.id = 2;
+
+	GamePlayer2.symbol = 'o';
+
+	GamePlayer2.numberOfPieces = 4;
+
+	GamePlayer2.playerState = PLACING;
+
+	GamePlayer2.positions = (List*)malloc(sizeof(List));
+
+	initList(GamePlayer2.positions);
+
+
+}
+
+void setUpGame() {
+
+	setUpStartBoard();
+	createStartBoard();
+
+	setUpMills();
+	createMills();
+
+	setUpPlayers();
+}
 struct Point getPos(char * what) {
 
 	int valid = 0;
@@ -152,7 +207,7 @@ void getPlayerMove(struct Point * fromPoint, struct Point *toPoint, struct Playe
 }
 
 void runGame(struct Player *p1, struct Player *p2) {
-	GamePrintBoard(p1->id);
+	GamePrintBoard(p1->id,GamePlayer1,GamePlayer2);
 	struct Point* toPoint = (struct Point*) malloc(sizeof(struct Point));
 	struct Point* fromPoint = (struct Point*) malloc(sizeof(struct Point));
 	getPlayerMove(fromPoint, toPoint, p1); //fromPoint and toPoint returned must be valid
