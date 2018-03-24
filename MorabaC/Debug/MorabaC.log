@@ -1,0 +1,8 @@
+﻿  game.c
+  MorabaC.c
+c:\users\martin\documents\visual studio 2015\projects\morabac\morabac\morabac.c(54): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+c:\users\martin\documents\visual studio 2015\projects\morabac\morabac\morabac.c(175): warning C4067: unexpected tokens following preprocessor directive - expected a newline
+  Generating Code...
+c:\users\martin\documents\visual studio 2015\projects\morabac\morabac\morabac.c(165): warning C4717: 'runGame': recursive on all control paths, function will cause runtime stack overflow
+  MorabaC.vcxproj -> c:\users\martin\documents\visual studio 2015\Projects\MorabaC\Debug\MorabaC.exe
+  MorabaC.vcxproj -> c:\users\martin\documents\visual studio 2015\Projects\MorabaC\Debug\MorabaC.pdb (Full PDB)
