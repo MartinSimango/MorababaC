@@ -1,17 +1,59 @@
 #include "stdafx.h"
-
+#include "board.h"
+#include "mills.h"
+#include "gameStructure.h"
 
 //     
 
 //                                         **************************GAMEBOARD***************************************************
 
+void setUpPlayers() {
+
+#if defined(__APPLE__) || defined(__unix__) 
+
+	strcpy(GamePlayer1.name, "Player 1");
+	strcpy(GamePlayer2.name, "Player 1");
+
+
+#elif defined(_WIN32) || defined(WIN32)
+
+	strcpy_s(GamePlayer1.name, sizeof(GamePlayer1.name), "Player 1");
+	strcpy_s(GamePlayer2.name, sizeof(GamePlayer1.name), "Player 2");
+
+#endif
+
+	GamePlayer1.id = 0;
+
+	GamePlayer1.symbol = 'x';
+
+	GamePlayer1.numberOfPieces = 4;
+
+	GamePlayer1.playerState = PLACING;
+
+	GamePlayer1.positions = (List*)malloc(sizeof(List));
+
+	initList(GamePlayer1.positions);
+
+	GamePlayer2.id = 1;
+
+	GamePlayer2.symbol = 'o';
+
+	GamePlayer2.numberOfPieces = 4;
+
+	GamePlayer2.playerState = PLACING;
+
+	GamePlayer2.positions = (List*)malloc(sizeof(List));
+
+	initList(GamePlayer2.positions);
+
+
+}
 
 
 
 
 
-
-void GamePrintBoard(int whosTurn,struct Player GamePlayer1,struct Player GamePlayer2) {
+ void GamePrintBoard(int whosTurn) {
 
 #if defined(__APPLE__) || defined(__unix__) 
 
@@ -24,7 +66,7 @@ void GamePrintBoard(int whosTurn,struct Player GamePlayer1,struct Player GamePla
 #endif
 
 	char ps1 = ' ', ps2 = '*';
-	if (whosTurn == 1) {
+	if (whosTurn == 0) {
 
 		ps1 = '*';
 		ps2 = ' ';
@@ -222,3 +264,14 @@ struct Coords * GameGetPlayerMills(struct Player*player) {
 	return 0; //to be completed
 }
 
+
+void setUpGame() {
+
+	setUpStartBoard();
+	createStartBoard();
+
+	setUpMills();
+	createMills();
+
+	setUpPlayers();
+}

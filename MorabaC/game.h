@@ -12,8 +12,7 @@ struct Player {
 	int numberOfPieces;
 	enum PlayerState playerState;
 	List * positions;
-};
-
+}GamePlayer1,GamePlayer2;
 
 void GamePrintBoard(int whosTurn);
 int GameIsValidPlace(struct Point pos);
@@ -25,5 +24,7 @@ void GameCheckStateChange(struct Player*player);
 void GamePlaceMove(struct Player*player, const struct Point *toPoint);
 void GameMovePiece(struct Player*player, const struct Point*toPoint, const struct Point*fromPoint);
 void GameUpdatePlayer(const struct Point * fromPoint, const struct Point *toPoint, struct Player* player);
+void setUpGame();
+void setUpPlayers();
 struct Coords * GameGetPlayerMills(struct Player*player);
 
