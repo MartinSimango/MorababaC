@@ -51,7 +51,7 @@ struct Point getPos(char * what) {
 		retPoint.let = toupper(c);
 		printf("\nColumn: ");
 
-#ifdef defined(__APPLE__) || defined(__unix__)
+#if   defined(__APPLE__) || defined(__unix__)
 
 		scanf("%c", &c);
 
@@ -172,7 +172,7 @@ void startGame() {
 
 
 int main() {
-#ifdef  defined(__APPLE__) || defined(__unix__);
+#if  defined(__APPLE__) || defined(__unix__)
 	setTerminalSettings();
 #endif
 
