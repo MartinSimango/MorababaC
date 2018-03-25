@@ -55,55 +55,57 @@ void Game__PrintBoard(const GAME * game) {
 	}
 	printf("      1   2   3       4      5   6   7 \n\n");
 
-	printf("  A  (%c)-------------(%c)------------(%c) \n", game->gameBoard.A1.symbol, 
-															game->gameBoard.A4.symbol,
-															game->gameBoard.A7.symbol);
+	printf("  A  (%c)-------------(%c)------------(%c) \n", 
+		game->gameBoard.A1.symbol, 
+		game->gameBoard.A4.symbol,
+		game->gameBoard.A7.symbol);
 	printf("      |\\              |             /|\n");
 	printf("      | \\             |            / |\n");
 	printf("      |  \\            |           /  |\n");
-	printf("  B   |  (%c)---------(%c)--------(%c)  |\n", 	game->gameBoard.B2.symbol, 
-															game->gameBoard.B4.symbol, 
-															game->gameBoard.B6.symbol);
+	printf("  B   |  (%c)---------(%c)--------(%c)  |\n", 	
+		game->gameBoard.B2.symbol, 
+		game->gameBoard.B4.symbol, 
+		game->gameBoard.B6.symbol);
 	printf("      |   |\\          |         /|   |\n");
 	printf("      |   | \\         |        / |   |\n");
 	printf("      |   |  \\        |       /  |   |\n");
 	printf("  C   |   |  (%c)-----(%c)----(%c)  |   |          %cPlayer 1 (%c)           %cPlayer 2 (%c)\n", 
-															game->gameBoard.C3.symbol, 
-															game->gameBoard.C4.symbol, 
-															game->gameBoard.C5.symbol, ps1, 
-															game->gamePlayer_1.symbol, ps2, 
-															game->gamePlayer_2.symbol);
+		game->gameBoard.C3.symbol, 
+		game->gameBoard.C4.symbol, 
+		game->gameBoard.C5.symbol, ps1, 
+		game->gamePlayer_1.symbol, ps2, 
+		game->gamePlayer_2.symbol);
 	printf("      |   |   |              |   |   |          ----------              ----------\n");
 	printf("      |   |   |              |   |   |          Unplaced Cows : %d       Unplaced Cows : %d\n", 
-															game->gamePlayer_1.numberOfPieces, 
-															game->gamePlayer_2.numberOfPieces);
+		game->gamePlayer_1.numberOfPieces, 
+		game->gamePlayer_2.numberOfPieces);
 	printf("  D  (%c)-(%c)-(%c)            (%c)-(%c)-(%c)         Cows alive : %d         Cows alive : %d\n",
-															game->gameBoard.D1.symbol,
-															game->gameBoard.D2.symbol, 
-															game->gameBoard.D3.symbol, 
-															game->gameBoard.D5.symbol, 
-															game->gameBoard.D6.symbol, 
-															game->gameBoard.D7.symbol, 12, 12);
+		game->gameBoard.D1.symbol,
+		game->gameBoard.D2.symbol, 
+		game->gameBoard.D3.symbol, 
+		game->gameBoard.D5.symbol, 
+		game->gameBoard.D6.symbol, 
+		game->gameBoard.D7.symbol, 12, 12);
 	printf("      |   |   |              |   |   |          Cows killed : %d         Cows killed : %d\n", 0, 0);
 	printf("      |   |   |              |   |   |\n");
 	printf("  E   |   |  (%c)-----(%c)----(%c)  |   |\n", 
-															game->gameBoard.E3.symbol, 
-															game->gameBoard.E4.symbol, 
-															game->gameBoard.E5.symbol);
+		game->gameBoard.E3.symbol, 
+		game->gameBoard.E4.symbol, 
+		game->gameBoard.E5.symbol);
 	printf("      |   |  /        |       \\  |   |\n");
 	printf("      |   | /         |        \\ |   |\n");
 	printf("      |   |/          |         \\|   |\n");
 	printf("  F   |  (%c)---------(%c)--------(%c)  |\n", 
-															game->gameBoard.F2.symbol, 
-															game->gameBoard.F4.symbol, 
-															game->gameBoard.F6.symbol);
+		game->gameBoard.F2.symbol, 
+		game->gameBoard.F4.symbol, 
+		game->gameBoard.F6.symbol);
 	printf("      |  /            |           \\  |\n");
 	printf("      | /             |            \\ |\n");
 	printf("      |/              |             \\|\n");
 	printf("  G  (%c)-------------(%c)------------(%c)\n", 
-															game->gameBoard.G1.symbol, 
-															game->gameBoard.G4.symbol, 
-															game->gameBoard.G7.symbol);
+		game->gameBoard.G1.symbol, 
+		game->gameBoard.G4.symbol, 
+		game->gameBoard.G7.symbol);
 
 	/*             board.[0].Symbol board.[1].Symbol board.[2].Symbol board.[3].Symbol board.[4].Symbol board.[5].Symbol board.[6].Symbol board.[7].Symbol board.[8].Symbol ps1 game->gamePlayer_1.Symbol
 	ps2 game->gamePlayer_2.Symbol game->gamePlayer_1.NumberOfPieces game->gamePlayer_2.NumberOfPieces board.[9].Symbol board.[10].Symbol board.[11].Symbol board.[12].Symbol board.[13].Symbol board.[14].Symbol
