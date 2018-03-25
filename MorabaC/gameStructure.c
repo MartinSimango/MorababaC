@@ -3,7 +3,7 @@
 POINT_PTR 
 Point__create(char let, int num) {
 	
-    POINT_PTR point = (POINT_PTR)malloc(sizeof(POINT));
+    POINT_PTR point = (POINT_PTR)malloc(sizeof(POINT_));
 	point->let = let;
 	point->num = num;
 	return point;
@@ -21,7 +21,7 @@ Coord__create(COORD_PTR coord,char let,int num,char symbol,POINT_PTR possible_1,
 	coord->pos.num=num;
 
 	
-    coord->possibleMoves = (POINT_PTR) malloc(4 * sizeof(POINT));
+    coord->possibleMoves = (POINT_PTR) malloc(4 * sizeof(POINT_));
 	coord->possibleMoves[0] = *possible_1;
 	coord->possibleMoves[1] = *possible_2;
 	coord->possibleMoves[2] = *possible_3;
@@ -45,7 +45,7 @@ Coord__create(COORD_PTR coord,char let,int num,char symbol,POINT_PTR possible_1,
 	}
    
 }
-int Coords__isEqual(COORD data, COORD dataToBeCompared) {
+int Coords__isEqual(COORD_ data, COORD_ dataToBeCompared) {
 	
 	return data.pos.let == dataToBeCompared.pos.let &&
 		   data.pos.num == dataToBeCompared.pos.num &&

@@ -11,25 +11,25 @@ struct Point {
 	int num;
 
 };
-typedef struct Point POINT;
+typedef struct Point POINT_;
 typedef struct Point * POINT_PTR;
 
 struct Coords {
 
-	POINT pos;
+	POINT_ pos;
 	char symbol;
 	POINT_PTR possibleMoves;
 	int possibleMovesNum;
 
 };
 
-typedef struct Coords COORD;	
+typedef struct Coords COORD_;	
 typedef struct Coords * COORD_PTR;
 typedef struct Coords ** MILLS;
 
 struct GameBoard {
 	
-	COORD								//all the coords on the board;
+	COORD_								//all the coords on the board;
 		A1, A4, A7, B2, B4, B6, C3, C4, C5, D1, 
 		D2, D3, D5, D6, D7, E3, E4, E5, F2, F4, F6, 
 		G1, G4, G7;                             
@@ -54,7 +54,7 @@ POINT_PTR Point__create(char let, int num);
 void Coord__create(COORD_PTR coord,char let,int num,char symbol,POINT_PTR possible_1, POINT_PTR possible_2, 
 			 		    POINT_PTR possible_3, POINT_PTR possible_4);
 
-int Coords__isEqual(struct Coords data, struct Coords dataToBeCompared);
+int Coords__isEqual(COORD_ data, COORD_ dataToBeCompared);
 
 
 

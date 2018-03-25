@@ -113,7 +113,7 @@ void Game__PrintBoard(const GAME * game) {
 	board.[15].Symbol board.[16].Symbol board.[17].Symbol board.[18].Symbol board.[19].Symbol board.[20].Symbol board.[21].Symbol board.[22].Symbol board.[23].Symbol
 	printf "%s" boardString*/
 }
-int Game__IsValidPlace(const GAME *game,const POINT pos) {
+int Game__IsValidPlace(const GAME *game,const POINT_ pos) {
 	for (int i = 0; i<COORDNUM; i++) {
 
 		struct Coords* element = CoordsList__getElementAt(&(game->startBoard), i);
@@ -129,7 +129,7 @@ int Game__IsValidPlace(const GAME *game,const POINT pos) {
 	return 0;
 }
 
-int Game__IsValidFrom(const GAME *game,POINT pos, const PLAYER*player){
+int Game__IsValidFrom(const GAME *game,POINT_ pos, const PLAYER*player){
 	struct Coords * coord = CoordsList__getCoord(&(game->startBoard), pos);
 
 	if (!coord) { //make sure the coord actually exists
@@ -139,7 +139,7 @@ int Game__IsValidFrom(const GAME *game,POINT pos, const PLAYER*player){
 	return CoordsList__itemExits(player->positions, *coord);
 }
 
-int Game__IsValidTo(const GAME *game,struct Point pos, PLAYER *player) {
+int Game__IsValidTo(const GAME *game,POINT_ pos, PLAYER *player) {
 	struct Coords * coord = CoordsList__getCoord(&(game->startBoard), pos);
 
 	if (!coord) { //make sure the coord actually exists
@@ -284,7 +284,7 @@ void Game__UpdatePlayer(GAME *game,const POINT_PTR fromPoint, const POINT_PTR to
 		}
 
 }
-struct Coords * GameGetPlayerMills(struct Player*player) {
+struct Coords * Game__GetPlayerMills(GAME *game, PLAYER *player){
 	return 0; //to be completed
 }
 

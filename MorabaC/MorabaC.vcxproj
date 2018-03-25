@@ -146,9 +146,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h" />
+    <ClInclude Include="coordsList.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameStructure.h" />
-    <ClInclude Include="List.h" />
     <ClInclude Include="makefile" />
     <ClInclude Include="mills.h" />
     <ClInclude Include="stdafx.h" />
@@ -156,9 +156,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="board.c" />
+    <ClCompile Include="coordsList.c" />
     <ClCompile Include="game.c" />
     <ClCompile Include="gameStructure.c" />
-    <ClCompile Include="List.c" />
     <ClCompile Include="mills.c" />
     <ClCompile Include="MorabaC.c" />
     <ClCompile Include="stdafx.c">

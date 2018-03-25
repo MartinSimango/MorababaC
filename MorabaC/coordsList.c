@@ -27,7 +27,7 @@ int CoordsList__itemExits(const CoordsList* list, struct Coords data) {
 
 }
 
-int CoordsList__addItem(CoordsList*list, COORD * data) {
+int CoordsList__addItem(CoordsList*list, COORD_ * data) {
 
 	if (CoordsList__itemExits(list, *data)) { //no duplicates
 		
@@ -54,7 +54,7 @@ int CoordsList__addItem(CoordsList*list, COORD * data) {
 	return 1;
 
 }
-COORD_PTR CoordsList__getCoord(const CoordsList *list, POINT point) {
+COORD_PTR CoordsList__getCoord(const CoordsList *list, POINT_ point) {
 	
 	if (CoordsList__isEmpty(list)) {
 		return 0;
@@ -62,7 +62,7 @@ COORD_PTR CoordsList__getCoord(const CoordsList *list, POINT point) {
 
 	for (Node *curr = list->head; curr != 0; curr = curr->next) {
 		
-		struct Point currPoint = curr->data->pos;
+		POINT_ currPoint = curr->data->pos;
 		
 		if (currPoint.let == point.let && currPoint.num == point.num) {
 			
@@ -72,7 +72,7 @@ COORD_PTR CoordsList__getCoord(const CoordsList *list, POINT point) {
 	return 0;
 
 }
-int CoordsList__removeItem(CoordsList *list, COORD data) {
+int CoordsList__removeItem(CoordsList *list, COORD_ data) {
 	if (CoordsList__isEmpty(list)) {
 		return 0;
 	}

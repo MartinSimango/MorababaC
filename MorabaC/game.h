@@ -43,9 +43,9 @@ void init__Game(GAME *game,const char* player_1_name,const char *player_2_name);
 
 struct Coords * Game__GetPlayerMills(GAME *game,PLAYER *player);
 
-int Game__IsValidPlace(const GAME *game,POINT pos);
-int Game__IsValidFrom(const GAME *game,POINT pos, const PLAYER*player);
-int Game__IsValidTo(const GAME *game,POINT pos, PLAYER *player);
+int Game__IsValidPlace(const GAME *game,const POINT_ pos);
+int Game__IsValidFrom(const GAME *game,POINT_ pos, const PLAYER*player);
+int Game__IsValidTo(const GAME *game,POINT_ pos, PLAYER *player);
 
 void create__allBoardMills(GAME *game);
 void create__startBoard(GAME *game);
