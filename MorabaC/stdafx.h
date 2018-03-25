@@ -16,10 +16,10 @@
 
 
 #include "game.h"
-#include "List.h"
+#include "coordsList.h"
 #include "board.h"
 #include "mills.h"
-#include "gameStructure.h"
+#include "gameStructure.h" 
 
 
 #include <stdio.h>

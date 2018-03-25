@@ -80,7 +80,7 @@ struct Point getPos(char * what) {
 	return retPoint;
 }
 
-void getPlayerMove(struct Point * fromPoint, struct Point *toPoint, struct Player* player) { //struct Coords* availableBoard
+void getPlayerMove(GAME *Morabaraba,struct Point * fromPoint, struct Point *toPoint, struct Player* player) { //struct Coords* availableBoard
 
 	struct Point tempPoint;
 	char askString[255];
@@ -96,7 +96,7 @@ void getPlayerMove(struct Point * fromPoint, struct Point *toPoint, struct Playe
 		#endif
 		tempPoint = getPos(askString);
 
-		if (GameIsValidPlace(tempPoint))
+		if (Game__IsValidPlace(Morabaraba,tempPoint))
 		{
 			toPoint->let = tempPoint.let;
 			toPoint->num = tempPoint.num;
@@ -104,7 +104,7 @@ void getPlayerMove(struct Point * fromPoint, struct Point *toPoint, struct Playe
 		else
 		{
 			printf("(%c,%d) is not a valid move\n", tempPoint.let, tempPoint.num);
-			getPlayerMove(fromPoint, toPoint, player);
+			getPlayerMove(Morabaraba,fromPoint, toPoint, player);
 		}
 		break;
 
@@ -116,7 +116,7 @@ void getPlayerMove(struct Point * fromPoint, struct Point *toPoint, struct Playe
 		#endif
 		tempPoint = getPos(askString);
 
-		if (GameIsValidFrom(tempPoint, player))
+		if (Game__IsValidFrom(Morabaraba,tempPoint, player))
 		{
 			fromPoint->let = tempPoint.let;
 			fromPoint->num = tempPoint.num;
@@ -127,7 +127,7 @@ void getPlayerMove(struct Point * fromPoint, struct Point *toPoint, struct Playe
 			#endif
 			tempPoint = getPos(askString);
 
-			if (GameIsValidTo(tempPoint, player, player->playerState))
+			if (Game__IsValidTo(Morabaraba,tempPoint, player))
 			{
 				toPoint->let = tempPoint.let;
 				toPoint->num = tempPoint.num;
@@ -135,14 +135,14 @@ void getPlayerMove(struct Point * fromPoint, struct Point *toPoint, struct Playe
 			else
 			{
 				printf("You cannot move from (%c,%d) to (%c,%d)\n", fromPoint->let, fromPoint->num, tempPoint.let, tempPoint.num);
-				getPlayerMove(fromPoint, toPoint, player);
+				getPlayerMove(Morabaraba,fromPoint, toPoint, player);
 			}
 
 		}
 		else {
 
 			printf("You have no cow at (%c,%d)\n", tempPoint.let, tempPoint.num);
-			getPlayerMove(fromPoint, toPoint, player);
+			getPlayerMove(Morabaraba,fromPoint, toPoint, player);
 
 		}
 		break;
@@ -154,25 +154,30 @@ void getPlayerMove(struct Point * fromPoint, struct Point *toPoint, struct Playe
 
 }
 
-void runGame(struct Player *p1, struct Player *p2) {
+void runGame(GAME *Morabaraba) {
 	//printBoard
 	//makeMove
 	//check for winner
-	GamePrintBoard(p1->id);
-	struct Point* toPoint = (struct Point*) malloc(sizeof(struct Point));
-	struct Point* fromPoint = (struct Point*) malloc(sizeof(struct Point));
-	getPlayerMove(fromPoint, toPoint, p1); //fromPoint and toPoint returned must be valid
- 	GameUpdatePlayer(fromPoint, toPoint, p1); //update player after they have moved
+	Game__PrintBoard(Morabaraba);
+	POINT_PTR toPoint = (struct Point*) malloc(sizeof(struct Point));
+	POINT_PTR fromPoint = (struct Point*) malloc(sizeof(struct Point));
+	
+ 	getPlayerMove(Morabaraba,fromPoint, toPoint, Morabaraba->currentPlayer); //fromPoint and toPoint returned must be valid
+	Game__UpdatePlayer(Morabaraba,fromPoint,toPoint,Morabaraba->currentPlayer);
+ 	//GameUpdatePlayer(fromPoint, toPoint, M); //update player after they have moved
 	free(toPoint);
     free(fromPoint);
-	struct Coords * playerMills = GameGetPlayerMills(p1);
-	runGame(p2, p1);
+	//struct Coords * playerMills = GameGetPlayerMills(p1);
+	runGame(Morabaraba);
 
 }
 
 void startGame() {
-	setUpGame(); //setup startboard and game mills
-	runGame(&GamePlayer1, &GamePlayer2);
+	GAME *Morabaraba= malloc(sizeof(GAME)); //to keep track of game states make this an array?
+	init__Game(Morabaraba,"Player 1","Player 2");
+
+	//setUpGame(); //setup startboard and game mills
+	runGame(Morabaraba);
 
 }
 

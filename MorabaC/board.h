@@ -1,8 +1,8 @@
 #pragma once
 
-#include "List.h"
-List startBoard;
+#include "gameStructure.h"
 
 
-void setUpStartBoard();
-void createStartBoard();
+
+void init__startBoard(GAMEBOARD *gameBoard);
+

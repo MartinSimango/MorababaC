@@ -1,50 +1,37 @@
 #include "stdafx.h"
-#include "board.h"
-#include "mills.h"
-#include "gameStructure.h"
+
 
 //     
 
 //                                         **************************GAMEBOARD***************************************************
 
-void setUpPlayers() {
+void Game__SetUpPlayers(GAME *game,const char *player_1_name,const char *player_2_name) {
 
 #if defined(__APPLE__) || defined(__unix__) 
 
-	strcpy(GamePlayer1.name, "Player 1");
-	strcpy(GamePlayer2.name, "Player 1");
+	strcpy(game->gamePlayer_1.name, player_1_name);
+	strcpy(game->gamePlayer_2.name, player_2_name);
 
 
 #elif defined(_WIN32) || defined(WIN32)
 
-	strcpy_s(GamePlayer1.name, sizeof(GamePlayer1.name), "Player 1");
-	strcpy_s(GamePlayer2.name, sizeof(GamePlayer1.name), "Player 2");
+	strcpy_s(game->gamePlayer_1.name, sizeof(game->gamePlayer_1.name), player_1_name);
+	strcpy_s(game->gamePlayer_2.name, sizeof(game->gamePlayer_2.name), player_2_name);
 
 #endif
+	game->gamePlayer_1.id = 0;
+	game->gamePlayer_1.symbol = 'x';
+	game->gamePlayer_1.numberOfPieces = 4;
+	game->gamePlayer_1.playerState = PLACING;
+	game->gamePlayer_1.positions = (CoordsList*)malloc(sizeof(CoordsList));
+	init__CoordsList(game->gamePlayer_1.positions);
 
-	GamePlayer1.id = 0;
-
-	GamePlayer1.symbol = 'x';
-
-	GamePlayer1.numberOfPieces = 4;
-
-	GamePlayer1.playerState = PLACING;
-
-	GamePlayer1.positions = (List*)malloc(sizeof(List));
-
-	initList(GamePlayer1.positions);
-
-	GamePlayer2.id = 1;
-
-	GamePlayer2.symbol = 'o';
-
-	GamePlayer2.numberOfPieces = 4;
-
-	GamePlayer2.playerState = PLACING;
-
-	GamePlayer2.positions = (List*)malloc(sizeof(List));
-
-	initList(GamePlayer2.positions);
+	game->gamePlayer_2.id = 1;
+	game->gamePlayer_2.symbol = 'o';
+	game->gamePlayer_2.numberOfPieces = 4;
+	game->gamePlayer_2.playerState = PLACING;
+	game->gamePlayer_2.positions = (CoordsList*)malloc(sizeof(CoordsList));
+	init__CoordsList(game->gamePlayer_2.positions);
 
 
 }
@@ -52,21 +39,15 @@ void setUpPlayers() {
 
 
 
-
- void GamePrintBoard(int whosTurn) {
+void Game__PrintBoard(const GAME * game) {
 
 #if defined(__APPLE__) || defined(__unix__) 
-
 	system("clear");
-
 #elif defined(_WIN32) || defined(WIN32)
-
 	system("@cls");
-
 #endif
-
 	char ps1 = ' ', ps2 = '*';
-	if (whosTurn == 0) {
+	if (game->whosTurn == 0) {
 
 		ps1 = '*';
 		ps2 = ' ';
@@ -74,40 +55,66 @@ void setUpPlayers() {
 	}
 	printf("      1   2   3       4      5   6   7 \n\n");
 
-	printf("  A  (%c)-------------(%c)------------(%c) \n", A1.symbol, A4.symbol, A7.symbol);
+	printf("  A  (%c)-------------(%c)------------(%c) \n", game->gameBoard.A1.symbol, 
+															game->gameBoard.A4.symbol,
+															game->gameBoard.A7.symbol);
 	printf("      |\\              |             /|\n");
 	printf("      | \\             |            / |\n");
 	printf("      |  \\            |           /  |\n");
-	printf("  B   |  (%c)---------(%c)--------(%c)  |\n", B2.symbol, B4.symbol, B6.symbol);
+	printf("  B   |  (%c)---------(%c)--------(%c)  |\n", 	game->gameBoard.B2.symbol, 
+															game->gameBoard.B4.symbol, 
+															game->gameBoard.B6.symbol);
 	printf("      |   |\\          |         /|   |\n");
 	printf("      |   | \\         |        / |   |\n");
 	printf("      |   |  \\        |       /  |   |\n");
-	printf("  C   |   |  (%c)-----(%c)----(%c)  |   |          %cPlayer 1 (%c)           %cPlayer 2 (%c)\n", C3.symbol, C4.symbol, C5.symbol, ps1, GamePlayer1.symbol, ps2, GamePlayer2.symbol);
+	printf("  C   |   |  (%c)-----(%c)----(%c)  |   |          %cPlayer 1 (%c)           %cPlayer 2 (%c)\n", 
+															game->gameBoard.C3.symbol, 
+															game->gameBoard.C4.symbol, 
+															game->gameBoard.C5.symbol, ps1, 
+															game->gamePlayer_1.symbol, ps2, 
+															game->gamePlayer_2.symbol);
 	printf("      |   |   |              |   |   |          ----------              ----------\n");
-	printf("      |   |   |              |   |   |          Unplaced Cows : %d       Unplaced Cows : %d\n", GamePlayer1.numberOfPieces, GamePlayer2.numberOfPieces);
-	printf("  D  (%c)-(%c)-(%c)            (%c)-(%c)-(%c)         Cows alive : %d         Cows alive : %d\n", D1.symbol, D2.symbol, D3.symbol, D5.symbol, D6.symbol, D7.symbol, 12, 12);
+	printf("      |   |   |              |   |   |          Unplaced Cows : %d       Unplaced Cows : %d\n", 
+															game->gamePlayer_1.numberOfPieces, 
+															game->gamePlayer_2.numberOfPieces);
+	printf("  D  (%c)-(%c)-(%c)            (%c)-(%c)-(%c)         Cows alive : %d         Cows alive : %d\n",
+															game->gameBoard.D1.symbol,
+															game->gameBoard.D2.symbol, 
+															game->gameBoard.D3.symbol, 
+															game->gameBoard.D5.symbol, 
+															game->gameBoard.D6.symbol, 
+															game->gameBoard.D7.symbol, 12, 12);
 	printf("      |   |   |              |   |   |          Cows killed : %d         Cows killed : %d\n", 0, 0);
 	printf("      |   |   |              |   |   |\n");
-	printf("  E   |   |  (%c)-----(%c)----(%c)  |   |\n", E3.symbol, E4.symbol, E5.symbol);
+	printf("  E   |   |  (%c)-----(%c)----(%c)  |   |\n", 
+															game->gameBoard.E3.symbol, 
+															game->gameBoard.E4.symbol, 
+															game->gameBoard.E5.symbol);
 	printf("      |   |  /        |       \\  |   |\n");
 	printf("      |   | /         |        \\ |   |\n");
 	printf("      |   |/          |         \\|   |\n");
-	printf("  F   |  (%c)---------(%c)--------(%c)  |\n", F2.symbol, F4.symbol, F6.symbol);
+	printf("  F   |  (%c)---------(%c)--------(%c)  |\n", 
+															game->gameBoard.F2.symbol, 
+															game->gameBoard.F4.symbol, 
+															game->gameBoard.F6.symbol);
 	printf("      |  /            |           \\  |\n");
 	printf("      | /             |            \\ |\n");
 	printf("      |/              |             \\|\n");
-	printf("  G  (%c)-------------(%c)------------(%c)\n", G1.symbol, G4.symbol, G7.symbol);
+	printf("  G  (%c)-------------(%c)------------(%c)\n", 
+															game->gameBoard.G1.symbol, 
+															game->gameBoard.G4.symbol, 
+															game->gameBoard.G7.symbol);
 
-	/*             board.[0].Symbol board.[1].Symbol board.[2].Symbol board.[3].Symbol board.[4].Symbol board.[5].Symbol board.[6].Symbol board.[7].Symbol board.[8].Symbol ps1 GamePlayer1.Symbol
-	ps2 GamePlayer2.Symbol GamePlayer1.NumberOfPieces GamePlayer2.NumberOfPieces board.[9].Symbol board.[10].Symbol board.[11].Symbol board.[12].Symbol board.[13].Symbol board.[14].Symbol
-	GamePlayer1.Positions.Length GamePlayer2.Positions.Length (12-(GamePlayer2.NumberOfPieces+GamePlayer2.Positions.Length)) (12-(GamePlayer1.NumberOfPieces+GamePlayer1.Positions.Length))
+	/*             board.[0].Symbol board.[1].Symbol board.[2].Symbol board.[3].Symbol board.[4].Symbol board.[5].Symbol board.[6].Symbol board.[7].Symbol board.[8].Symbol ps1 game->gamePlayer_1.Symbol
+	ps2 game->gamePlayer_2.Symbol game->gamePlayer_1.NumberOfPieces game->gamePlayer_2.NumberOfPieces board.[9].Symbol board.[10].Symbol board.[11].Symbol board.[12].Symbol board.[13].Symbol board.[14].Symbol
+	game->gamePlayer_1.Positions.Length game->gamePlayer_2.Positions.Length (12-(game->gamePlayer_2.NumberOfPieces+game->gamePlayer_2.Positions.Length)) (12-(game->gamePlayer_1.NumberOfPieces+game->gamePlayer_1.Positions.Length))
 	board.[15].Symbol board.[16].Symbol board.[17].Symbol board.[18].Symbol board.[19].Symbol board.[20].Symbol board.[21].Symbol board.[22].Symbol board.[23].Symbol
 	printf "%s" boardString*/
 }
-int GameIsValidPlace(struct Point pos) {
-	for (int i = 0; i<CoordNum; i++) {
+int Game__IsValidPlace(const GAME *game,const POINT pos) {
+	for (int i = 0; i<COORDNUM; i++) {
 
-		struct Coords* element = getElementAt(&startBoard, i);
+		struct Coords* element = CoordsList__getElementAt(&(game->startBoard), i);
 
 		if (element->pos.let == pos.let && element->pos.num == pos.num) {
 
@@ -120,75 +127,79 @@ int GameIsValidPlace(struct Point pos) {
 	return 0;
 }
 
-int GameIsValidFrom(struct Point pos, struct Player*player) {
-	struct Coords * coord = getCoords(&startBoard, pos);
+int Game__IsValidFrom(const GAME *game,POINT pos, const PLAYER*player){
+	struct Coords * coord = CoordsList__getCoord(&(game->startBoard), pos);
 
 	if (!coord) { //make sure the coord actually exists
 
 		return 0;
 	}
-	return itemExits(player->positions, *coord);
+	return CoordsList__itemExits(player->positions, *coord);
 }
-int GameIsValidTo(struct Point pos, struct Player *player, enum PlayerState playerState) {
-	struct Coords * coord = getCoords(&startBoard, pos);
+
+int Game__IsValidTo(const GAME *game,struct Point pos, PLAYER *player) {
+	struct Coords * coord = CoordsList__getCoord(&(game->startBoard), pos);
 
 	if (!coord) { //make sure the coord actually exists
 
 		return 0;
 	}
 
-	if (!itemExits(&startBoard, *coord)) {
+	if (!CoordsList__itemExits(&(game->startBoard), *coord)) {
 
 		return 0;
 	}
-	if (playerState == FLYING) {
+	if (player->playerState == FLYING) { //don't need to check the neighbours if FLYING
 
-		return GameIsValidPlace(pos);
+		return Game__IsValidPlace(game,pos);
 	}
-	List *playerPositions = player->positions;
+	CoordsList *playerPositions = player->positions;
 	for (int i = 0; i<player->positions->length; i++) {
 
-		struct Coords *element = getElementAt(playerPositions, i);
+		struct Coords *element = CoordsList__getElementAt(playerPositions, i);
 
-		for (int j = 0; j<4; j++) { //max of 4 possible moves
+		for (int j = 0; j<COORD_MAXPOSSIBLEMOVES; j++) { //max of 4 possible moves
 
-			struct Coords *coord = getCoords(&startBoard, element->possibleMoves[j]);
+			struct Coords *coord = CoordsList__getCoord(&(game->startBoard), element->possibleMoves[j]);
 
 			if (!coord) { //if the coord in the possibleMoves array is not valid
 
 				continue;
 			}
 
-			if (isEqual(*getCoords(&startBoard, pos), *coord) && GameIsValidPlace(pos)) {
+			if (Coords__isEqual(*CoordsList__getCoord(&(game->startBoard), pos), *coord) && Game__IsValidPlace(game,pos)) {
 
 				return 1;
+
 			}
 
 		}
 	}
+	
 	return 0;
 
 
-}
-void GameAddPiece(struct Player*player, const struct Point *toPoint) {
 
-	if (!addItem(player->positions, getCoords(&startBoard, *toPoint))) {
+}
+void Game__AddPiece(GAME *game,PLAYER*player, const POINT_PTR toPoint){
+
+	if (!CoordsList__addItem(player->positions, CoordsList__getCoord(&(game->startBoard), *toPoint))) {
 
 		perror("Something really bad happened!(Add piece)");
 		exit(EXIT_FAILURE);
 
 	}
 }
-void GameRemovePiece(struct Player*player, const struct Point *fromPoint) {
 
-	if (!removeItem(player->positions, *getCoords(&startBoard, *fromPoint))) { //should never happen
+void Game__RemovePiece(GAME *game,PLAYER*player, const POINT_PTR fromPoint){
 
+	if (!CoordsList__removeItem(player->positions, *CoordsList__getCoord(&(game->startBoard), *fromPoint))) { //should never happen
 		perror("Something really bad happened!(Remove piece)");
 		exit(EXIT_FAILURE);
 
 	}
 }
-void GameCheckStateChange(struct Player*player) {
+void Game__CheckStateChange(PLAYER*player){
 
 	switch (player->playerState) {
 
@@ -220,44 +231,55 @@ void GameCheckStateChange(struct Player*player) {
 
 
 }
-void GamePlaceMove(struct Player*player, const struct Point *toPoint) {
+void Game__PlaceMove(GAME *game,PLAYER*player, const POINT_PTR toPoint) {
 
-	struct Coords * coord = getCoords(&startBoard, *toPoint);
+	struct Coords * coord = CoordsList__getCoord(&(game->startBoard), *toPoint);
 	coord->symbol = player->symbol;
 
-	GameAddPiece(player, toPoint);
+	Game__AddPiece(game,player, toPoint);
 	player->numberOfPieces--;
 
-	GameCheckStateChange(player);
+	Game__CheckStateChange(player);
+
 
 }
 
-void GameMovePiece(struct Player*player, const struct Point*toPoint, const struct Point*fromPoint) {
+void Game__MovePiece(GAME *game,PLAYER*player, const POINT_PTR toPoint, const POINT_PTR fromPoint) {
 
-	struct Coords * coord = getCoords(&startBoard, *fromPoint);
-	GameRemovePiece(player, fromPoint);
+	struct Coords * coord = CoordsList__getCoord(&(game->startBoard), *fromPoint);
+	Game__RemovePiece(game,player, fromPoint);
 
 	coord->symbol = ' '; //make the coord you're moving from blank
-	coord = getCoords(&startBoard, *toPoint);
+	coord = CoordsList__getCoord(&(game->startBoard), *toPoint);
 	coord->symbol = player->symbol;
 
-	GameAddPiece(player, toPoint);
+	Game__AddPiece(game,player, toPoint);
+
 }
-void GameUpdatePlayer(const struct Point * fromPoint, const struct Point *toPoint, struct Player* player) {
+void Game__UpdatePlayer(GAME *game,const POINT_PTR fromPoint, const POINT_PTR toPoint, PLAYER* player){
 
 	switch (player->playerState) {
 
 	case PLACING:
 
-		GamePlaceMove(player, toPoint);
+		Game__PlaceMove(game,player, toPoint);
 		break;
 
 	default:
 
-		GameMovePiece(player, toPoint, fromPoint);
+		Game__MovePiece(game,player, toPoint, fromPoint);
 		break;
 
 	}
+		game->whosTurn= (game->whosTurn+1)%2;
+		if(game->whosTurn==0)
+		{
+			game->currentPlayer= &(game->gamePlayer_1);
+		}
+		else
+		{
+			game->currentPlayer= &(game->gamePlayer_2);
+		}
 
 }
 struct Coords * GameGetPlayerMills(struct Player*player) {
@@ -265,13 +287,92 @@ struct Coords * GameGetPlayerMills(struct Player*player) {
 }
 
 
-void setUpGame() {
 
-	setUpStartBoard();
-	createStartBoard();
+void create__allBoardMills (GAME*game) {
+	//all coordinate combinations that can form a mill CoordsList__addItem(game->allBoardMills,if all are occupied by the same player)
 
-	setUpMills();
-	createMills();
+	game->allBoardMills = (CoordsList*)malloc(sizeof(CoordsList) * MILLNUM);
 
-	setUpPlayers();
+	init__CoordsList(game->allBoardMills);
+
+
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.AA17));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.BB26));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.CC35));
+
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.DD13));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.DD57));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.EE35));
+
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.FF26));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.GG17));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.AG11));
+
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.BF22));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.CE33));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.AC44));
+
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.EG44));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.CE55));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.BF66));
+
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.AG77));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.AC13));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.CA57));
+
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.GE13));
+	CoordsList__addItem(game->allBoardMills, *(game->gameBoard.EG57));
+
+	/*COORD_PTR *cor =getElementAt(game->allBoardMills,0);
+	//cor;
+	printf("Char: (%c,%d)\n",cor[2].pos.let,cor[2].pos.num);
+	A1.symbol='B';
+	printf("Char: %c \n",getElementAt(game->allBoardMills,0)->symbol);*/
+
+}
+void create__startBoard(GAME*game) {
+	
+	init__CoordsList(&(game->startBoard));
+ 
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.A1));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.A4));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.A7));
+
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.B2));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.B4));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.B6));
+
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.C3));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.C4));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.C5));
+
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.D1));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.D2));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.D3));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.D5));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.D6));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.D7));
+
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.E3));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.E4));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.E5));
+
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.F2));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.F4));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.F6));
+
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.G1));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.G4));
+	 CoordsList__addItem(&(game->startBoard), &(game->gameBoard.G7));
+}
+void init__Game(GAME *game,const char* player_1_name,const char *player_2_name){
+	init__startBoard(&(game->gameBoard));
+	create__startBoard(game);
+    printf("P: (%c,%d)\n",game->gameBoard.A1.pos.let,game->gameBoard.A1.pos.num);
+	init__Mills(&(game->gameBoard));
+	create__allBoardMills(game);
+	printf("P: (%c,%d)\n",game->gameBoard.A1.pos.let,game->gameBoard.A1.pos.num);
+	Game__SetUpPlayers(game,player_1_name,player_2_name);
+	game->whosTurn=0; //make it player 1's turn
+	game->currentPlayer= &(game->gamePlayer_1);
 }
