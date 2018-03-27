@@ -182,16 +182,16 @@ void startGame() {
 }
 
 
-int main() {
-#if  defined(__APPLE__) || defined(__unix__)
-	setTerminalSettings();
-#endif
+// int main() {
+// #if  defined(__APPLE__) || defined(__unix__)
+// 	setTerminalSettings();
+// #endif
 
-	startGame();
-#if  defined(__APPLE__) || defined(__unix__)
-	resetTerminalSettings();
-#elif defined(_WIN32) || defined(WIN32)
-	_getch();
+// 	startGame();
+// #if  defined(__APPLE__) || defined(__unix__)
+// 	resetTerminalSettings();
+// #elif defined(_WIN32) || defined(WIN32)
+// 	_getch();
 
-#endif
-}
+// #endif
+// }

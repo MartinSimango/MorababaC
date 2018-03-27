@@ -370,10 +370,8 @@ void create__startBoard(GAME*game) {
 void init__Game(GAME *game,const char* player_1_name,const char *player_2_name){
 	init__startBoard(&(game->gameBoard));
 	create__startBoard(game);
-    printf("P: (%c,%d)\n",game->gameBoard.A1.pos.let,game->gameBoard.A1.pos.num);
 	init__Mills(&(game->gameBoard));
 	create__allBoardMills(game);
-	printf("P: (%c,%d)\n",game->gameBoard.A1.pos.let,game->gameBoard.A1.pos.num);
 	Game__SetUpPlayers(game,player_1_name,player_2_name);
 	game->whosTurn=0; //make it player 1's turn
 	game->currentPlayer= &(game->gamePlayer_1);

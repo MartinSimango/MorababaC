@@ -20,7 +20,7 @@
 #include "board.h"
 #include "mills.h"
 #include "gameStructure.h" 
-
+#include "MorabaC.h"
 
 #include <stdio.h>
 #include <stdlib.h>
