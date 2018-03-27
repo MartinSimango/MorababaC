@@ -13,7 +13,7 @@ int CoordsList__isEmpty(const CoordsList * list) {
 
 }
 
-int CoordsList__itemExits(const CoordsList* list, struct Coords data) {
+int CoordsList__itemExits(const CoordsList* list, COORD_ data) {
 
 	for (Node *p = list->head; p != 0; p = p->next) {
 
@@ -27,7 +27,7 @@ int CoordsList__itemExits(const CoordsList* list, struct Coords data) {
 
 }
 
-int CoordsList__addItem(CoordsList*list, COORD_ * data) {
+int CoordsList__addItem(CoordsList*list, COORD_PTR data) {
 
 	if (CoordsList__itemExits(list, *data)) { //no duplicates
 		
@@ -112,6 +112,7 @@ int CoordsList__removeItem(CoordsList *list, COORD_ data) {
 	}
 
 	list->length--;
+	free(curr);  //delete the memory current is pointing to
 	return 1;
 
 }
@@ -131,8 +132,21 @@ COORD_PTR CoordsList__getElementAt(const CoordsList *list, int pos) {
 	return curr->data;
 }
 
-// void printList(List *list) {
-// 	//for(Node *p=list->head;p!=0;p=p->next){
-// 	//printf("%d ",p->data);
-// 	//}
-// }
+CoordsList * CoordsList__FromCoordList(const CoordsList *list) {
+	CoordsList *newList = malloc(sizeof(CoordsList));
+	init__CoordsList(newList); //initialize head
+	
+	for (int i = 0; i < list->length; i++) {
+		COORD_PTR coordToAdd = Coord__FromCoord(CoordsList__getElementAt(list, i));
+		CoordsList__addItem(newList,coordToAdd);
+	}
+	return newList;
+
+}
+
+void CoordsList__printList(CoordsList *list){
+  for(Node *p=list->head;p!=0;p=p->next){
+ 	printf("(%c,%d) , ",p->data->pos.let, p->data->pos.num);
+}
+  printf("\n");
+ }

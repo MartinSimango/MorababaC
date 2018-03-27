@@ -1,3 +1,6 @@
-﻿  coordsList.c
+﻿  MorabaC.c
+c:\users\martin\desktop\mora-master\morababac\morabac\morabac.c(130): warning C4098: 'getPlayerMove': 'void' function returning a value
+c:\users\martin\desktop\mora-master\morababac\morabac\morabac.c(243): warning C4098: 'runGame': 'void' function returning a value
+c:\users\martin\desktop\mora-master\morababac\morabac\morabac.c(262): warning C4717: 'runGame': recursive on all control paths, function will cause runtime stack overflow
   MorabaC.vcxproj -> C:\Users\Martin\Desktop\Mora-master\MorababaC\Debug\MorabaC.exe
   MorabaC.vcxproj -> C:\Users\Martin\Desktop\Mora-master\MorababaC\Debug\MorabaC.pdb (Full PDB)

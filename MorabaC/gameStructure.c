@@ -26,14 +26,12 @@ Coord__create(COORD_PTR coord,char let,int num,char symbol,POINT_PTR possible_1,
 	coord->possibleMoves[1] = *possible_2;
 	coord->possibleMoves[2] = *possible_3;
 	
-    free(possible_1);
-	free(possible_2);  //free the memory that was allocated
-	free(possible_3);
+ 
 	
     if (possible_4 != 0) {
 		
         coord->possibleMoves[3] = *possible_4; //check if p4 is null
-		free(possible_4);
+	
 
 	}
 	else 
@@ -51,4 +49,56 @@ int Coords__isEqual(COORD_ data, COORD_ dataToBeCompared) {
 		   data.pos.num == dataToBeCompared.pos.num &&
 		   data.symbol == dataToBeCompared.symbol;
 
+}
+
+COORD_PTR Coord__FromCoord(COORD_PTR coord) {
+	COORD_PTR returnCoord= malloc(sizeof(COORD_));
+	Coord__create(returnCoord, coord->pos.let, coord->pos.num, coord->symbol, &(coord->possibleMoves[0]),
+	&(coord->possibleMoves[1]), &(coord->possibleMoves[2]),( &coord->possibleMoves[3]));
+
+	/*returnCoord->possibleMoves = (POINT_PTR) malloc(4 * sizeof(POINT_));
+	for (int i = 0; i < 4; i++) {
+		returnCoord->possibleMoves[i].let = coord->possibleMoves[i].let;
+		returnCoord->possibleMoves[i].num = coord->possibleMoves[i].num;
+	}*/
+
+	return returnCoord;
+}
+
+GAMEBOARD * Gameboard__FromGameboard(GAMEBOARD * gameBoard) {
+	GAMEBOARD * newGameBoard = malloc(sizeof(GAMEBOARD));
+
+	newGameBoard->A1=  *Coord__FromCoord(&(gameBoard->A1));
+	newGameBoard->A4 = *Coord__FromCoord(&(gameBoard->A4));
+	newGameBoard->A7 = *Coord__FromCoord(&(gameBoard->A7));
+	
+	newGameBoard->B2 = *Coord__FromCoord(&(gameBoard->B2));
+	newGameBoard->B4 = *Coord__FromCoord(&(gameBoard->B4));
+	newGameBoard->B6 = *Coord__FromCoord(&(gameBoard->B6));
+	
+	newGameBoard->C3 = *Coord__FromCoord(&(gameBoard->C3));
+	newGameBoard->C4 = *Coord__FromCoord(&(gameBoard->C4));
+	newGameBoard->C5 = *Coord__FromCoord(&(gameBoard->C5));
+	
+	newGameBoard->D1 = *Coord__FromCoord(&(gameBoard->D1));
+	newGameBoard->D2 = *Coord__FromCoord(&(gameBoard->D2));
+	newGameBoard->D3 = *Coord__FromCoord(&(gameBoard->D3));
+	newGameBoard->D5 = *Coord__FromCoord(&(gameBoard->D5));
+	newGameBoard->D6 = *Coord__FromCoord(&(gameBoard->D6));
+	newGameBoard->D7 = *Coord__FromCoord(&(gameBoard->D7));
+	
+	newGameBoard->E3 = *Coord__FromCoord(&(gameBoard->E3));
+	newGameBoard->E4 = *Coord__FromCoord(&(gameBoard->E4));
+	newGameBoard->E5 = *Coord__FromCoord(&(gameBoard->E5));
+	
+	newGameBoard->F2 = *Coord__FromCoord(&(gameBoard->F2));
+	newGameBoard->F4 = *Coord__FromCoord(&(gameBoard->F4));
+	newGameBoard->F6 = *Coord__FromCoord(&(gameBoard->F6));
+	
+	newGameBoard->G1 = *Coord__FromCoord(&(gameBoard->G1));
+	newGameBoard->G4 = *Coord__FromCoord(&(gameBoard->G4));
+	newGameBoard->G7 = *Coord__FromCoord(&(gameBoard->G7));
+
+	
+	return newGameBoard;
 }

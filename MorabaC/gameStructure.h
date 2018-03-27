@@ -19,7 +19,6 @@ struct Coords {
 	POINT_ pos;
 	char symbol;
 	POINT_PTR possibleMoves;
-	int possibleMovesNum;
 
 };
 
@@ -55,6 +54,9 @@ void Coord__create(COORD_PTR coord,char let,int num,char symbol,POINT_PTR possib
 			 		    POINT_PTR possible_3, POINT_PTR possible_4);
 
 int Coords__isEqual(COORD_ data, COORD_ dataToBeCompared);
+
+COORD_PTR Coord__FromCoord(COORD_PTR coord);
+GAMEBOARD * Gameboard__FromGameboard(GAMEBOARD * gameBoard);
 
 
 

@@ -28,7 +28,7 @@ struct Game {
 };
 
 typedef struct Game GAME;
-
+PLAYER * Game__CreatePlayer(char *name, int id, char symbol, int numberOfPieces, enum PlayerState playerState, CoordsList positions);
 void Game__SetUpPlayers(GAME *game,const char *player_1_name,const char *player_2_name);
 void Game__PrintBoard(const GAME *game);
 
@@ -47,5 +47,9 @@ int Game__IsValidPlace(const GAME *game,const POINT_ pos);
 int Game__IsValidFrom(const GAME *game,POINT_ pos, const PLAYER*player);
 int Game__IsValidTo(const GAME *game,POINT_ pos, PLAYER *player);
 
+PLAYER * Game__PlayerFrom(PLAYER *player);
+
 void create__allBoardMills(GAME *game);
 void create__startBoard(GAME *game);
+
+GAME * Game__FromGame(GAME *game);

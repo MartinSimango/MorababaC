@@ -5,35 +5,31 @@
 
 //                                         **************************GAMEBOARD***************************************************
 
-void Game__SetUpPlayers(GAME *game,const char *player_1_name,const char *player_2_name) {
-
+PLAYER * Game__CreatePlayer(char *name, int id, char symbol, int numberOfPieces, enum PlayerState playerState, CoordsList* positions) {
+	PLAYER * player = malloc(sizeof(PLAYER));
 #if defined(__APPLE__) || defined(__unix__) 
-
-	strcpy(game->gamePlayer_1.name, player_1_name);
-	strcpy(game->gamePlayer_2.name, player_2_name);
-
+	strcpy(player->name, name);
 
 #elif defined(_WIN32) || defined(WIN32)
-
-	strcpy_s(game->gamePlayer_1.name, sizeof(game->gamePlayer_1.name), player_1_name);
-	strcpy_s(game->gamePlayer_2.name, sizeof(game->gamePlayer_2.name), player_2_name);
-
+	strcpy_s(player->name, sizeof(player->name), name);
 #endif
-	game->gamePlayer_1.id = 0;
-	game->gamePlayer_1.symbol = 'x';
-	game->gamePlayer_1.numberOfPieces = 4;
-	game->gamePlayer_1.playerState = PLACING;
-	game->gamePlayer_1.positions = (CoordsList*)malloc(sizeof(CoordsList));
-	init__CoordsList(game->gamePlayer_1.positions);
+	player->symbol = symbol;
+	player->numberOfPieces = numberOfPieces;
+	player->playerState = playerState;
+	player->positions = positions;
+	player->id = id;
+	return player;
 
-	game->gamePlayer_2.id = 1;
-	game->gamePlayer_2.symbol = 'o';
-	game->gamePlayer_2.numberOfPieces = 4;
-	game->gamePlayer_2.playerState = PLACING;
-	game->gamePlayer_2.positions = (CoordsList*)malloc(sizeof(CoordsList));
-	init__CoordsList(game->gamePlayer_2.positions);
-
-
+}
+void Game__SetUpPlayers(GAME *game,const char *player_1_name,const char *player_2_name) {
+	
+	CoordsList *player1_positions = malloc(sizeof(CoordsList));
+	init__CoordsList(player1_positions);
+	game->gamePlayer_1=*Game__CreatePlayer(player_1_name, 0, 'x', 4, PLACING, player1_positions);
+	
+	CoordsList *player2_positions = malloc(sizeof(CoordsList));
+	init__CoordsList(player2_positions);
+	game->gamePlayer_2 = *Game__CreatePlayer(player_2_name, 1, 'o', 4, PLACING, player2_positions);
 }
 
 
@@ -41,11 +37,6 @@ void Game__SetUpPlayers(GAME *game,const char *player_1_name,const char *player_
 
 void Game__PrintBoard(const GAME * game) {
 
-#if defined(__APPLE__) || defined(__unix__) 
-	system("clear");
-#elif defined(_WIN32) || defined(WIN32)
-	system("@cls");
-#endif
 	char ps1 = ' ', ps2 = '*';
 	if (game->whosTurn == 0) {
 
@@ -370,11 +361,51 @@ void create__startBoard(GAME*game) {
 void init__Game(GAME *game,const char* player_1_name,const char *player_2_name){
 	init__startBoard(&(game->gameBoard));
 	create__startBoard(game);
-    printf("P: (%c,%d)\n",game->gameBoard.A1.pos.let,game->gameBoard.A1.pos.num);
 	init__Mills(&(game->gameBoard));
 	create__allBoardMills(game);
-	printf("P: (%c,%d)\n",game->gameBoard.A1.pos.let,game->gameBoard.A1.pos.num);
 	Game__SetUpPlayers(game,player_1_name,player_2_name);
 	game->whosTurn=0; //make it player 1's turn
 	game->currentPlayer= &(game->gamePlayer_1);
 }
+
+
+PLAYER * Game__PlayerFrom(PLAYER *player) {
+	return 
+	Game__CreatePlayer(player->name, player->id, player->symbol,player->numberOfPieces, player->playerState,
+					CoordsList__FromCoordList(player->positions));
+
+}
+
+GAME * Game__FromGame(GAME *game) {
+	GAME *newGame = malloc(sizeof(GAME));
+	newGame->whosTurn = game->whosTurn;
+	newGame->allBoardMills= (CoordsList__FromCoordList(game->allBoardMills));
+	//newGame->currentPlayer = Game__PlayerFrom(game->currentPlayer);
+	
+    // newGame->startBoard = *CoordsList__FromCoordList(&game->startBoard);
+	/*for (int i = 0; i < game->startBoard.length; i++) {
+		COORD_PTR coordToAdd = Coord__FromCoord(CoordsList__getElementAt(&(game->startBoard), i));
+		CoordsList__addItem(&newGame->startBoard, coordToAdd);
+	}*/
+
+     newGame->gamePlayer_1 = *Game__PlayerFrom(&(game->gamePlayer_1));
+	 newGame->gamePlayer_2 = *Game__PlayerFrom(&(game->gamePlayer_2));
+	 if (newGame->whosTurn == 0)
+	 {
+		 newGame->currentPlayer = &(newGame->gamePlayer_1);
+	 }
+	 else
+	 {
+		 newGame->currentPlayer = &(newGame->gamePlayer_2);
+	 }
+	 newGame->gameBoard = *Gameboard__FromGameboard(&(game->gameBoard));
+	 create__startBoard(newGame);
+	//  init__Mills(&(newGame->gameBoard)); //reinitilize the mills to correspond to this newboards mills
+										 // so that A1 corresponds to this A1 and not the old boards A1
+
+
+
+	return newGame;
+
+}
+
