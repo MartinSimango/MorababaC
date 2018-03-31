@@ -15,15 +15,15 @@ GAME_NETWORK_DATA game_data;
 
 static int connect_to_server(const char * ip_address){
    //create socket for client
-    SOCK_FD=socket(AF_INET,SOCK_STREAM,0);
-    SERVER_ADDRESS.sin_family=AF_INET;	//
-    SERVER_ADDRESS.sin_addr.s_addr= inet_addr(ip_address); //ip address of server
-    SERVER_ADDRESS.sin_port=htons(SERVER__PORT); //random port to connect to
+    SOCK_FD = socket(AF_INET,SOCK_STREAM,0);
+    SERVER_ADDRESS.sin_family = AF_INET;	//
+    SERVER_ADDRESS.sin_addr.s_addr = inet_addr(ip_address); //ip address of server
+    SERVER_ADDRESS.sin_port = htons(SERVER__PORT); //server port to connect to
     
     
     int result = connect(SOCK_FD,(struct sockaddr *)&SERVER_ADDRESS, sizeof(SERVER_ADDRESS));
     
-    if(result==-1)
+    if(result == -1)
         return 0;
     
     return 1;
@@ -43,7 +43,6 @@ static void  processInstructionFromServer(GAME * Morabaraba){
         POINT_ fromPoint;
         switch(game_data.SERVER_INSTRUCTION){
             case MOVE_PIECE:
-             
 
                 fromPoint.let=game_data.fromLet;
                 fromPoint.num=game_data.fromNum; 
@@ -53,7 +52,7 @@ static void  processInstructionFromServer(GAME * Morabaraba){
                 printf("to (%c,%d)\n",game_data.toLet,game_data.toNum);
                 Game__UpdatePlayer(Morabaraba,&fromPoint,&toPoint,Morabaraba->currentPlayer);
                 
-            break;
+                 break;
             case DO_NOTHING:
                 break;
             default:
@@ -157,11 +156,6 @@ static void startGameNetwork(){
     game_data.toLet=' ';
     game_data.toNum=0;
 
-
-
-
-
-
     PLAYER_ID= get_player_id();
 
     printf("You are player %d\n",(PLAYER_ID+1));
@@ -169,20 +163,19 @@ static void startGameNetwork(){
         printf("Waiting for second player...\n");
 
     //wait for the game to start
-
     read(SOCK_FD,&(game_data.SERVER_INSTRUCTION),sizeof(game_data.SERVER_INSTRUCTION));
     printf("Game can start!\n");
-    
     //wait_game_start(request_data); //get the game from the server
-
-   
     
     if(game_data.SERVER_INSTRUCTION==GAME_START){
+        
         GAME * Morabaraba = (GAME *) malloc(sizeof(GAME));
        	init__Game(Morabaraba,"Player 1","Player 2");
         run_game(Morabaraba); //start the game
+    
     }
-    else{
+    else
+    {
         perror("Game failed to start!");
     }
    
@@ -191,9 +184,11 @@ static void startGameNetwork(){
 }
 
 int main(int argc, char *argv[]){
+    
     #if  defined(__APPLE__) || defined(__unix__)
-	setTerminalSettings();
+	    setTerminalSettings();
     #endif
+    
     if(NETWORK)
 	    startGameNetwork();
     else{
@@ -201,12 +196,10 @@ int main(int argc, char *argv[]){
     }
 
     #if  defined(__APPLE__) || defined(__unix__)
-	resetTerminalSettings();
+	    resetTerminalSettings();
     #elif defined(_WIN32) || defined(WIN32)
-	_getch();
+	    _getch();
     #endif
-    
-
     
 }
 

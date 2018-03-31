@@ -6,8 +6,7 @@
 
 enum InstructionFromClient {
     PLAYER_MOVE=0 ,
-    GET_WHOS_TURN,
-    KILL_COW
+    KILL_COW,
 };
 
 enum InstructionFromServer {
