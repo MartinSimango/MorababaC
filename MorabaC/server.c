@@ -24,22 +24,129 @@ static void create_server_socket(){
 
     
 }
+static void write_to_player(int i){
 
+    write(PLAYER_SOCK_ID[i],&(network_data.CLIENT_INSTRUCTION),sizeof(network_data.CLIENT_INSTRUCTION));
+    write(PLAYER_SOCK_ID[i],&(network_data.SERVER_INSTRUCTION),sizeof(network_data.SERVER_INSTRUCTION));
+    write(PLAYER_SOCK_ID[i],&(network_data.current_player_id) ,sizeof(network_data.current_player_id));
+    write(PLAYER_SOCK_ID[i],&(network_data.lastest_player_id),sizeof(network_data.lastest_player_id));
+    write(PLAYER_SOCK_ID[i],&(network_data.fromLet),sizeof(network_data.fromLet));
+    write(PLAYER_SOCK_ID[i],&(network_data.fromNum),sizeof(network_data.fromNum));
+    write(PLAYER_SOCK_ID[i],&(network_data.toLet),sizeof(network_data.toLet));
+    write(PLAYER_SOCK_ID[i],&(network_data.toNum), sizeof(network_data.toNum));
+    
 
-
-static void runGameServer(GAME*Morabaraba){
-     
-     Game__PrintBoard(Morabaraba);
-     POINT_PTR toPoint = (struct Point*) malloc(sizeof(struct Point));
-     POINT_PTR fromPoint = (struct Point*) malloc(sizeof(struct Point));
-     Game__UpdatePlayer(Morabaraba,fromPoint,toPoint,Morabaraba->currentPlayer);
 
 }
-static void startGameServer(){
+static void read_from_player(int i){
+
+    read(PLAYER_SOCK_ID[i],&(network_data.CLIENT_INSTRUCTION),sizeof(network_data.CLIENT_INSTRUCTION));
+    read(PLAYER_SOCK_ID[i],&(network_data.SERVER_INSTRUCTION),sizeof(network_data.SERVER_INSTRUCTION));
+    read(PLAYER_SOCK_ID[i],&(network_data.current_player_id) ,sizeof(network_data.current_player_id));
+    read(PLAYER_SOCK_ID[i],&(network_data.lastest_player_id),sizeof(network_data.lastest_player_id));
+    read(PLAYER_SOCK_ID[i],&(network_data.fromLet),sizeof(network_data.fromLet));
+    read(PLAYER_SOCK_ID[i],&(network_data.fromNum),sizeof(network_data.fromNum));
+    read(PLAYER_SOCK_ID[i],&(network_data.toLet),sizeof(network_data.toLet));
+    read(PLAYER_SOCK_ID[i],&(network_data.toNum), sizeof(network_data.toNum));
+
+}
+static void process_instruction_fromClient(GAME * Morabaraba){
+     POINT_ toPoint;
+     POINT_ fromPoint;
+
+     switch(network_data.CLIENT_INSTRUCTION){
+        case PLAYER_MOVE:
+
+            
+              fromPoint.let=network_data.fromLet;
+              fromPoint.num=network_data.fromNum; 
+              toPoint.let=network_data.toLet;
+              toPoint.num=network_data.toNum;
+               
+             
+              network_data.SERVER_INSTRUCTION= DO_NOTHING;
+       write_to_player(Morabaraba->currentPlayer->id);
     
-    GAME *Morabaraba= malloc(sizeof(GAME)); //to keep track of game states make this an array?
+     
+              Game__UpdatePlayer(Morabaraba,&fromPoint,&toPoint,Morabaraba->currentPlayer);
+              
+            printf("Player %d just played\n",(Morabaraba->currentPlayer->id+1));
+             network_data.SERVER_INSTRUCTION=MOVE_PIECE;
+             write_to_player(Morabaraba->currentPlayer->id);
+        
+            break;
+        case GET_WHOS_TURN:
+            network_data.SERVER_INSTRUCTION=DO_NOTHING;
+            network_data.current_player_id=Morabaraba->whosTurn;
+      
+           
+        break;
+    
+
+        default:
+            break;
+
+     }
+     //current player has been update locally so just send instruction to enemy player to update the board
+     
+     
+     
+     
+
+}
+
+static void sendClientsGame(GAME * Morabaraba){
+    
+     read_from_player(Morabaraba->currentPlayer->id);
+     if(network_data.CLIENT_INSTRUCTION!=PLAYER_MOVE){
+    
+        process_instruction_fromClient(Morabaraba);
+        write_to_player(Morabaraba->currentPlayer->id);
+      
+        read_from_player(Morabaraba->enemyPlayer->id);
+       process_instruction_fromClient(Morabaraba);
+     }
+     else
+     {
+        process_instruction_fromClient(Morabaraba);
+
+     }
+    
+
+      
+    
+  }
+  // printf("Intr %d\n",network_data.CLIENT_INSTRUCTION);
+ 
+        
+static void runGameServer(GAME*Morabaraba){
+       Game__PrintBoard(Morabaraba);
+     sendClientsGame(Morabaraba);
+   //while(1);
+     runGameServer(Morabaraba);
+     
+
+}
+
+
+
+       
+
+
+
+    //READ clients request for game to start 
+  
+
+static void startGameServer(){
+ 
+    GAME *Morabaraba= (GAME*)malloc(sizeof(GAME)); //to keep track of game states make this an array?
 	init__Game(Morabaraba,"Player 1","Player 2");
-    network_data.game=Morabaraba;
+  
+
+    //waiting for server to send who's turn
+    sendClientsGame(Morabaraba);
+
+
     runGameServer(Morabaraba);
 
 }
@@ -60,20 +167,26 @@ int main(int argc,char*argv[]){
 
 
 
-	while(1){
+	while( NUM_PLAYERS<2 ){
+        int player_id;
 		printf("Waiting for clients...\n");
 		fflush(stdout);
 		client_sockfd = accept(SERVER_SOCK_FD,(struct sockaddr*)&client_address,(socklen_t *)&client_len);
         printf("Player %d connected\n",network_data.lastest_player_id+1);
 		PLAYER_SOCK_ID[NUM_PLAYERS]=client_sockfd;
-		read(client_sockfd,&network_data,sizeof(network_data));
-		network_data.lastest_player_id=NUM_PLAYERS++;
-		write(client_sockfd,&network_data,sizeof(network_data));
-		if(NUM_PLAYERS==2){
-			break;
-		}
+
+		read(client_sockfd,&player_id,sizeof(player_id));
+        player_id=NUM_PLAYERS++;
+		
+        write(client_sockfd,&player_id,sizeof(player_id));
+		
 	}
 	printf("Game can now Start!\n");
-	//startGame();
+	//tell clients game cant start
+    network_data.SERVER_INSTRUCTION=GAME_START;
+    write(PLAYER_SOCK_ID[0],&(network_data.SERVER_INSTRUCTION),sizeof(network_data.SERVER_INSTRUCTION));
+    write(PLAYER_SOCK_ID[1],&(network_data.SERVER_INSTRUCTION),sizeof(network_data.SERVER_INSTRUCTION));
+
 	startGameServer();
+
 }

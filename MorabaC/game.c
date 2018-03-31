@@ -277,10 +277,13 @@ void Game__UpdatePlayer(GAME *game,const POINT_PTR fromPoint, const POINT_PTR to
 		if(game->whosTurn==0)
 		{
 			game->currentPlayer= &(game->gamePlayer_1);
+			game->enemyPlayer= &(game->gamePlayer_2);
 		}
 		else
 		{
+			game->enemyPlayer= &(game->gamePlayer_1);
 			game->currentPlayer= &(game->gamePlayer_2);
+			
 		}
 
 }
@@ -375,4 +378,5 @@ void init__Game(GAME *game,const char* player_1_name,const char *player_2_name){
 	Game__SetUpPlayers(game,player_1_name,player_2_name);
 	game->whosTurn=0; //make it player 1's turn
 	game->currentPlayer= &(game->gamePlayer_1);
+    game->enemyPlayer= &(game->gamePlayer_2);	
 }

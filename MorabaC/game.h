@@ -19,7 +19,7 @@ typedef struct Player PLAYER;
 struct Game {
 	CoordsList startBoard; 
 	CoordsList *allBoardMills;
-	PLAYER gamePlayer_1, gamePlayer_2,*currentPlayer;
+	PLAYER gamePlayer_1, gamePlayer_2,*currentPlayer,*enemyPlayer;
 	GAMEBOARD gameBoard;
 	int whosTurn;
 
