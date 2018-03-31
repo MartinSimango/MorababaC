@@ -124,10 +124,6 @@ static void run_game(GAME * Morabaraba){
         printf("Currently %s's turn\n",Morabaraba->currentPlayer->name);
         //wait for server to return enemy player move
         readFromServer();
-         
-        
-        
-        
     }
     processInstructionFromServer(Morabaraba);
      
